@@ -9,7 +9,7 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="container mx-auto p-4">
                 <button 
-                    @click="addCategory" 
+                    @click="openAddCategoryModal" 
                     class="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded text-sm mb-4"
                 >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-1">
@@ -40,7 +40,7 @@
                                 </td>
                                 <td class="py-3 border-b text-center flex justify-center space-x-2">
                                     <button 
-                                        @click="editCategory(category)" 
+                                        @click="openEditCategoryModal(category)" 
                                         class="flex items-center bg-yellow-500 hover:bg-yellow-700 text-white font-semibold py-2 px-2 rounded text-sm"
                                         >
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-1">
@@ -64,6 +64,10 @@
                     </table>
                 </div>
             </div>
+            <teleport to="body">
+                <AddCategoryModal v-if="showAddModal" @closeAddCategoryModal="closeAddCategoryModal"/>
+                <EditCategoryModal v-if="showEditModal" @closeEditCategoryModal="closeEditCategoryModal"/>
+            </teleport>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -72,6 +76,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import AddCategoryModal from './AddCategoryModal.vue';
+import EditCategoryModal from './EditCategoryModal.vue';
 
 const categories = ref([
   { name: 'Electronics', active: true },
@@ -79,16 +85,24 @@ const categories = ref([
   { name: 'Clothing', active: true },
 ]);
 
-function addCategory() {
-  // Logic for adding a new category
+// const emit = defineEmits(['sort'])
+const showAddModal = ref(false)
+
+const openAddCategoryModal = () => {
+    showAddModal.value = true
 }
 
-function toggleActive(category) {
-  // Logic for toggling the active state
+const closeAddCategoryModal = () => {
+    showAddModal.value = false
 }
 
-function editCategory(category) {
-  // Logic for editing the category
+const showEditModal = ref(false)
+function openEditCategoryModal(gallery) {
+    showEditModal.value = true
+}
+
+function closeEditCategoryModal(gallery) {
+    showEditModal.value = false
 }
 
 function deleteCategory(category) {
