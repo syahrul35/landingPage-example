@@ -17,9 +17,10 @@
                             <!-- Form tambahan -->
                             <form @submit.prevent="submitForm">
                                 <div class="mt-4 sm:flex sm:items-center">
-                                    <label for="productTotal"
+                                    <label for="categoryName"
                                         class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Category Name</label>
-                                    <input type="text" id="productTotal" name="productTotal"
+                                    <input type="text" id="categoryName" name="categoryName"
+                                        v-model="form.categoryName"
                                         class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
                                 </div>
                             </form>
@@ -52,4 +53,26 @@ const closeAddCategoryModal = () => {
     emits('closeAddCategoryModal');
 };
 // end Modal
+
+const props = defineProps({
+    categories: Array
+})
+
+// Form handling
+const form = useForm({
+    categoryName: ''
+})
+
+const submitForm = async () => {
+    try {
+        await form.post(route('category.store'), {
+            categoryName: form.categoryName
+    })
+        closeAddCategoryModal()
+
+    } catch (error) {
+        
+    }
+    
+}
 </script>

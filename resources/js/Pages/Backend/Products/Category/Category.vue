@@ -29,7 +29,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(category, index) in categories" :key="index" class="hover:bg-gray-50">
-                                <td class="py-3 px-4 border-b">{{ category.name }}</td>
+                                <td class="py-3 px-4 border-b">{{ category.categoryName }}</td>
                                 <td class="py-3 px-4 border-b text-center">
                                 <input 
                                     type="checkbox" 
@@ -65,8 +65,8 @@
                 </div>
             </div>
             <teleport to="body">
-                <AddCategoryModal v-if="showAddModal" @closeAddCategoryModal="closeAddCategoryModal"/>
-                <EditCategoryModal v-if="showEditModal" @closeEditCategoryModal="closeEditCategoryModal"/>
+                <AddCategoryModal v-if="showAddModal" @closeAddCategoryModal="closeAddCategoryModal" :categories="categories"/>
+                <EditCategoryModal v-if="showEditModal" @closeEditCategoryModal="closeEditCategoryModal" :categories="categories" :selectedCategory="selectedCategory"/>
             </teleport>
         </div>
     </AuthenticatedLayout>
@@ -75,17 +75,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import AddCategoryModal from './AddCategoryModal.vue';
 import EditCategoryModal from './EditCategoryModal.vue';
 
-const categories = ref([
-  { name: 'Electronics', active: true },
-  { name: 'Books', active: false },
-  { name: 'Clothing', active: true },
-]);
-
-// const emit = defineEmits(['sort'])
 const showAddModal = ref(false)
 
 const openAddCategoryModal = () => {
@@ -96,16 +90,29 @@ const closeAddCategoryModal = () => {
     showAddModal.value = false
 }
 
+const selectedCategory = ref(null)
 const showEditModal = ref(false)
-function openEditCategoryModal(gallery) {
+function openEditCategoryModal(category) {
+    selectedCategory.value = category
     showEditModal.value = true
 }
 
-function closeEditCategoryModal(gallery) {
+function closeEditCategoryModal(category) {
     showEditModal.value = false
 }
 
-function deleteCategory(category) {
-  // Logic for deleting the category
+const props = defineProps({
+    categories: Array
+})
+
+const form = useForm({})
+async function deleteCategory(category) {
+    if (confirm('Are You Sure to Delete This Transaction?')) {
+      try {
+        await form.delete(route('category.destroy', { category: category.id }))
+      } catch (error) {
+        console.log(error)
+      }
+    }
 }
 </script>
