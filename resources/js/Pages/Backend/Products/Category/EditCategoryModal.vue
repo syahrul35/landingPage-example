@@ -58,7 +58,6 @@ const props = defineProps({
     categories: Array,
     selectedCategory: Object
 })
-    console.log("🚀 ~ selectedCategory:", props.selectedCategory)
 
 const editedCategory = ref({
     id: props.selectedCategory.id,

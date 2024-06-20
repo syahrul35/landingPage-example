@@ -71,8 +71,7 @@ const submitForm = async () => {
         closeAddCategoryModal()
 
     } catch (error) {
-        
+        console.log(error)
     }
-    
 }
 </script>
