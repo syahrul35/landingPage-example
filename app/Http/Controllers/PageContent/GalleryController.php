@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\PageContent;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class GalleryController extends Controller
@@ -13,7 +15,10 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Backend/PageContent/Gallery/Gallery');
+        $galleries = Gallery::all();
+        return Inertia::render('Backend/PageContent/Gallery/Gallery', [
+            'galleries' => $galleries,
+        ]);
     }
 
     /**
@@ -29,7 +34,28 @@ class GalleryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'galleryImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'galleryTitle' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        try{
+            $path = null;
+            if($request->hasFile('galleryImage')) {
+                $path = $request->file('galleryImage')->store('gallery_images', 'public');
+            }
+
+            Gallery::create([
+                'galleryImage' => $path,
+                'title' => $validate['galleryTitle'],
+                'description' => $validate['description'],
+            ]);
+
+            return redirect()->route('gallery.index')->with('success', 'Gallery created successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('gallery.index')->with('error', 'Gallery Failed to Create!' . $e->getMessage());
+        }
     }
 
     /**
@@ -51,16 +77,54 @@ class GalleryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Gallery $gallery)
     {
-        //
+        $validate = $request->validate([
+            'galleryImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'galleryTitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        // dd($validate);
+
+        try {
+            // Jika ada gambar baru, simpan dan hapus gambar lama
+            if ($request->hasFile('galleryImage')) {
+                if ($gallery->galleryImage && Storage::disk('public')->exists($gallery->galleryImage)) {
+                    Storage::disk('public')->delete($gallery->galleryImage);
+                }
+
+                $path = $request->file('galleryImage')->store('gallery_images', 'public');
+                $gallery->galleryImage = $path;
+            }
+
+            $gallery->title = $validate['galleryTitle'];
+            $gallery->description = $validate['description'];
+            $gallery->save();
+
+            return redirect()->route('gallery.index')->with('success', 'Gallery updated successfully');
+
+        } catch (\Exception $e) {
+            return redirect()->route('gallery.index')->with('error', 'Failed to update gallery! ' . $e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Gallery $gallery)
     {
-        //
+        if (!$gallery) {
+            return redirect()->route('gallery.index')->with('error', 'Gallery not found');
+        }
+
+        // Delete image
+        if ($gallery->galleryImage) {
+            Storage::disk('public')->delete($gallery->galleryImage);
+        }
+
+        $gallery->delete();
+
+        return redirect()->route('gallery.index')->with('success', 'Gallery deleted successfully');
     }
 }

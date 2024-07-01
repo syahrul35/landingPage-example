@@ -29,9 +29,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(gallery, index) in sliders" :key="index" class="hover:bg-gray-50">
+                            <tr v-for="(gallery, index) in galleries" :key="index" class="hover:bg-gray-50">
                                 <td class="py-3 px-4 border-b">
-                                    <img :src="gallery.image" alt="Gallery Image" class="w-20 h-20 object-cover rounded">
+                                    <img :src="getImageUrl(gallery.galleryImage)" alt="Gallery Image" class="w-20 h-20 object-cover rounded">
                                 </td>
                                 <td class="py-3 px-4 border-b">{{ gallery.title }}</td>
                                 <td class="py-3 px-4 border-b text-center">
@@ -80,25 +80,27 @@
                 </div>
             </div>
             <teleport to="body">
-                <AddGalleryModal v-if="showAddModal" @closeAddGalleryModal="closeAddGalleryModal"/>
-                <EditGalleryModal v-if="showEditModal" @closeEditGalleryModal="closeEditGalleryModal"/>
+                <AddGalleryModal v-if="showAddModal" @closeAddGalleryModal="closeAddGalleryModal" :galleries="galleries"/>
+                <EditGalleryModal v-if="showEditModal" @closeEditGalleryModal="closeEditGalleryModal" :galleries="galleries" :gallerySelected="gallerySelected"/>
             </teleport>
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { ref, defineProps } from 'vue';
+import { Head, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AddGalleryModal from './AddGalleryModal.vue';
 import EditGalleryModal from './EditGalleryModal.vue';
 
-const sliders = ref([
-    { title: 'Gallery 1', image: '/path/to/image1.jpg', active: true },
-    { title: 'Gallery 2', image: '/path/to/image2.jpg', active: false },
-    { title: 'Gallery 3', image: '/path/to/image3.jpg', active: true },
-]);
+const props = defineProps({
+    galleries: Array
+})
+
+const getImageUrl = (path) => {
+    return path ? `/storage/${path}` : ''
+}
 
 // const emit = defineEmits(['sort'])
 const showAddModal = ref(false)
@@ -111,8 +113,10 @@ const closeAddGalleryModal = () => {
     showAddModal.value = false
 }
 
+const gallerySelected = ref(null)
 const showEditModal = ref(false)
 function openEditGalleryModal(gallery) {
+    gallerySelected.value = gallery
     showEditModal.value = true
 }
 
@@ -128,7 +132,14 @@ function editGallery(gallery) {
     // Logic for editing the gallery
 }
 
-function deleteGallery(gallery) {
-    // Logic for deleting the gallery
+const form = useForm({})
+async function deleteGallery(gallery) {
+    if (confirm('Are You Sure to Delete This Product?')) {
+      try {
+        await form.delete(route('gallery.destroy', { gallery: gallery.id }))
+      } catch (error) {
+        console.log(error)
+      }
+    }
 }
 </script>

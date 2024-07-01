@@ -17,16 +17,24 @@
                             <!-- Form tambahan -->
                             <form @submit.prevent="submitForm">
                                 <div class="mt-4 sm:flex sm:items-center">
-                                    <label for="productTotal"
+                                    <label for="galleryImage"
                                         class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Image</label>
-                                    <input type="file" id="productImage" name="productTotal"
+                                    <input type="file" id="galleryImage" name="galleryImage"
+                                        @change="handleImageUpload"
                                         class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
                                 </div>
                                 <div class="mt-4 sm:flex sm:items-center">
-                                    <label for="productTotal"
-                                        class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Tilte</label>
-                                    <input type="text" id="productTotal" name="productTotal"
+                                    <label for="galleryTitle"
+                                        class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Title</label>
+                                    <input type="text" id="galerryTitle" name="galleryTitle"
+                                        v-model="form.galleryTitle"
                                         class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
+                                </div>
+                                <div class="mt-4 sm:items-center">
+                                    <label for="description"
+                                        class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start mb-2">Description</label>
+                                    <textarea id="editor" name="description" rows="3"
+                                        class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4"></textarea>
                                 </div>
                             </form>
                         </div>
@@ -58,4 +66,46 @@ const closeAddGalleryModal = () => {
     emits('closeAddGalleryModal');
 };
 // end Modal
+
+const props = ({
+    galleries: Array
+})
+
+const form = useForm({
+    galleryImage: '',
+    galleryTitle: '',
+    description: '',
+})
+
+const handleImageUpload = (event) => {
+    const file = event.target.files[0]
+    form.galleryImage = file
+}
+
+onMounted(() => {
+ClassicEditor
+    .create(document.querySelector('#editor'))
+    .then(editor => {
+        form.description = editor.getData()
+        editor.model.document.on('change:data', () => {
+            form.description = editor.getData()
+        })
+    })
+    .catch(error => {
+        console.error(error)
+    })
+})
+
+const submitForm = async () => {
+    try {
+        await form.post(route('gallery.store'), {
+            galleryImage: form.galleryImage,
+            galleryTitle: form.galleryTitle,
+            description: form.description,
+        })
+        closeAddGalleryModal()
+    } catch (error) {
+        console.log(error)
+    }
+}
 </script>
