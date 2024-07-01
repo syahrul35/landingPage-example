@@ -17,31 +17,39 @@
                             <!-- Form tambahan -->
                             <form @submit.prevent="submitForm">
                                 <div class="mt-4 sm:flex sm:items-center">
-                                    <label for="productTotal"
-                                        class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Price</label>
-                                    <input type="file" id="productImage" name="productTotal"
+                                    <label for="productName"
+                                        class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Title</label>
+                                    <input type="text" id="productName" name="productName"
+                                        v-model="form.productName"
                                         class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
                                 </div>
-                                <!-- Input kategori yang disaring berdasarkan jenis transaksi yang dipilih -->
+                                <div class="mt-4 sm:flex sm:items-center">
+                                    <label for="productImage"
+                                        class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Image</label>
+                                    <input type="file" id="productImage" name="productImage"
+                                        @change="handleImageUpload"
+                                        class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
+                                </div>
                                 <div class="mt-4 sm:flex sm:items-center">
                                     <label for="productCategory"
                                         class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start grid justify-items-start">Category</label>
-                                    <select id="productCategory" name="productCategory" 
+                                    <select id="productCategory" name="productCategory" v-model="form.idCategory"
                                         class="mt-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
                                         <option value="">Select a category</option>
-                                        <option>test</option>
+                                        <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.categoryName }}</option>
                                     </select>
                                 </div>
                                 <div class="mt-4 sm:items-center">
-                                    <label for="productDescription"
+                                    <label for="description"
                                         class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start mb-2">Description</label>
-                                    <textarea id="editor" name="productDescription" rows="3"
+                                    <textarea id="editor" name="description" rows="3"
                                         class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4"></textarea>
                                 </div>
                                 <div class="mt-4 sm:flex sm:items-center">
-                                    <label for="productTotal"
+                                    <label for="price"
                                         class="block text-sm font-medium text-gray-700 sm:w-1/4 grid justify-start">Price</label>
-                                    <input type="text" id="productTotal" name="productTotal"
+                                    <input type="text" id="price" name="price"
+                                        v-model="form.price"
                                         class="mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm sm:w-3/4">
                                 </div>
                             </form>
@@ -68,21 +76,58 @@ import { ref, defineProps, defineEmits, computed, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
 // Modal
-const emits = defineEmits(['closeAddProductModal']);
+const emits = defineEmits(['closeAddProductModal'])
 
 const closeAddProductModal = () => {
-    emits('closeAddProductModal');
-};
+    emits('closeAddProductModal')
+}
 // end Modal
+
+const props = defineProps({
+    categories: Array
+})
+
+const form = useForm({
+    idCategory: '',
+    productName: '',
+    productImage: '',
+    description: '',
+    price: ''
+})
+
+const handleImageUpload = (event) => {
+    const file = event.target.files[0]
+    form.productImage = file
+}
 
 onMounted(() => {
 ClassicEditor
     .create(document.querySelector('#editor'))
     .then(editor => {
-        // Editor initialization
+        form.description = editor.getData()
+        editor.model.document.on('change:data', () => {
+            form.description = editor.getData()
+        })
     })
     .catch(error => {
-        console.error(error);
-    });
-});
+        console.error(error)
+    })
+})
+
+const submitForm = async () => {
+    const formData = new FormData()
+    formData.append('idCategory', form.idCategory)
+    formData.append('productName', form.productName)
+    formData.append('productImage', form.productImage)
+    formData.append('description', form.description)
+    formData.append('productCategory', form.productCategory)
+    formData.append('price', form.price)
+
+    try {
+        await form.post(route('products.store'), formData)
+        closeAddProductModal()
+    } catch (error) {
+        console.error(error)
+    }
+}
 </script>

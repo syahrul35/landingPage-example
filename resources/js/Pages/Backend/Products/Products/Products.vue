@@ -24,24 +24,15 @@
                             <tr class="bg-gray-100">
                                 <th class="py-3 px-4 border-b font-semibold text-left">Image</th>
                                 <th class="py-3 px-4 border-b font-semibold text-left">Title</th>
-                                <th class="py-3 px-4 border-b font-semibold text-center">Active</th>
                                 <th class="py-3 px-4 border-b font-semibold text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(product, index) in products" :key="index" class="hover:bg-gray-50">
                                 <td class="py-3 px-4 border-b">
-                                    <img :src="product.image" alt="Product Image" class="w-20 h-20 object-cover rounded">
+                                    <img :src="getImageUrl(product.productImage)" alt="Product Image" class="w-20 h-20 object-cover rounded">
                                 </td>
-                                <td class="py-3 px-4 border-b">{{ product.title }}</td>
-                                <td class="py-3 px-4 border-b text-center">
-                                    <input 
-                                        type="checkbox" 
-                                        v-model="product.active" 
-                                        @change="toggleActive(product)" 
-                                        class="form-checkbox h-5 w-5 text-blue-600 rounded-sm"
-                                    >
-                                </td>
+                                <td class="py-3 px-4 border-b">{{ product.productName }}</td>
                                 <td class="py-1 px-2 border-b text-center">
                                     <div class="flex justify-center space-x-2">
                                         <button 
@@ -80,25 +71,20 @@
                 </div>
             </div>
             <teleport to="body">
-                <AddProductModal v-if="showAddModal" @closeAddProductModal="closeAddProductModal"/>
-                <EditProductModal v-if="showEditModal" @closeEditProductModal="closeEditProductModal"/>
+                <AddProductModal v-if="showAddModal" @closeAddProductModal="closeAddProductModal" :categories="categories"/>
+                <EditProductModal v-if="showEditModal" @closeEditProductModal="closeEditProductModal" :categories="categories" :selectedProduct="selectedProduct"/>
             </teleport>
         </div>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { useForm } from '@inertiajs/vue3';
 import AddProductModal from './AddProductModal.vue';
 import EditProductModal from './EditProductModal.vue';
-
-const products = ref([
-    { title: 'Product 1', image: '/path/to/image1.jpg', active: true },
-    { title: 'Product 2', image: '/path/to/image2.jpg', active: false },
-    { title: 'Product 3', image: '/path/to/image3.jpg', active: true },
-]);
 
 // const emit = defineEmits(['sort'])
 const showAddModal = ref(false)
@@ -111,8 +97,10 @@ const closeAddProductModal = () => {
     showAddModal.value = false
 }
 
+const selectedProduct = ref(null)
 const showEditModal = ref(false)
 function openEditProductModal(product) {
+    selectedProduct.value = product
     showEditModal.value = true
 }
 
@@ -120,11 +108,23 @@ function closeEditProductModal(product) {
     showEditModal.value = false
 }
 
-function editProduct(product) {
-    // Logic for editing the product
+const props = defineProps({
+    categories: Array,
+    products: Array
+})
+
+const getImageUrl = (path) => {
+    return path ? `/storage/${path}` : '';
 }
 
-function deleteProduct(product) {
-    // Logic for deleting the product
+const form = useForm({})
+async function deleteProduct(product) {
+    if (confirm('Are You Sure to Delete This Product?')) {
+      try {
+        await form.delete(route('products.destroy', { product: product.id }))
+      } catch (error) {
+        console.log(error)
+      }
+    }
 }
 </script>
