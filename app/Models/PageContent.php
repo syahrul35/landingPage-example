@@ -10,7 +10,6 @@ class PageContent extends Model
     use HasFactory;
 
     protected $fillable = [
-        'logo',
         'about',
         'email',
         'phone',

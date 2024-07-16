@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('slider', SliderController::class);
-    Route::resource('about-us', AboutUsController::class);
+    Route::resource('aboutus', AboutUsController::class);
     Route::resource('gallery', GalleryController::class);
 
     Route::resource('category', CategoryController::class);

@@ -61,7 +61,7 @@ let showingProductsMenu = ref(false)
                             <Link class="w-full" :href="route('slider.index')">Slider</Link>
                         </li>
                         <li class="px-2 py-1 transition-colors duration-150">
-                            <Link class="w-full" :href="route('about-us.index')">About Us</Link>
+                            <Link class="w-full" :href="route('aboutus.index')">About Us</Link>
                         </li>
                         <li class="px-2 py-1 transition-colors duration-150">
                             <Link class="w-full" :href="route('gallery.index')">Gallery</Link>
