@@ -70,7 +70,6 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 const props = defineProps({
     pageContent: Object
 })
-    console.log("🚀 ~ pageContent:", props.pageContent.id)
 
 const editedPageContent = ref({
     id: props.pageContent.id,
@@ -81,7 +80,6 @@ const editedPageContent = ref({
     address: props.pageContent.address,
     maps: props.pageContent.maps,
 })
-    console.log("🚀 ~ id:", editedPageContent.value.id)
 
 const form = useForm({
     logo: editedPageContent.value.logo,
