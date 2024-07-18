@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PageContent;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,7 +16,10 @@ class SliderController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Backend/PageContent/Slider/Slider');
+        $sliders = Gallery::all();
+        return Inertia::render('Backend/PageContent/Slider/Slider', [
+            'sliders' => $sliders,
+        ]);
     }
 
     /**
@@ -53,9 +57,16 @@ class SliderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Gallery $slider)
     {
-        //
+        try {
+            $slider->isSlider = $request->isSlider;
+            $slider->save();
+
+            return redirect()->route('slider.index')->with('success', 'Slider Updated Successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('slider.index')->with('error', 'Failed to Update Slider!' . $e->getMessage());
+        }
     }
 
     /**
