@@ -12,6 +12,7 @@ class Gallery extends Model
     protected $fillable = [
         'galleryImage',
         'title',
+        'isSlider',
         'description',
     ];
 }

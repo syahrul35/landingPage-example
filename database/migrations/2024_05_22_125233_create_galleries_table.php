@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('galleryImage');
             $table->string('title');
             $table->text('description');
+            $table->boolean('isSlider')->default(true);
             $table->timestamps();
         });
     }
