@@ -1,9 +1,9 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import Slider from '../../Layouts/Slider.vue';
+import Slider from './Partials/Slider.vue';
 // import '../../../css/frontend.css';
 
-defineProps({
+const props = defineProps({
     canLogin: {
         type: Boolean,
     },
@@ -18,6 +18,9 @@ defineProps({
         type: String,
         required: true,
     },
+    galleries: {
+        type: Array
+    }
 });
 
 function handleImageError() {
@@ -73,7 +76,7 @@ function handleImageError() {
     </nav>
 
     <!-- Image Slider - Swiper -->
-    <Slider/>
+    <Slider :galleries="galleries"/>
 
     <!-- Description -->
     <section id="description" class="text-center p-8 pt-12">
