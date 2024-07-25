@@ -20,12 +20,18 @@
             <div class="items-center">
                 <h4 class="font-bold text-lg ">Follow Us</h4>
                 <ul class="flex space-x-4 justify-center mt-2">
-                    <li><a href="#" class="hover:text-gray-300"><img src="../../../../../storage/app/public/facebook.png" alt="Facebook"
-                                class="w-6 h-6"></a></li>
+                    <li>
+                        <a href="#" class="hover:text-gray-300">
+                            <img src="../../../../../storage/app/public/facebook.png" alt="Facebook" class="w-6 h-6">
+                        </a>
+                    </li>
                     <!-- <li><a href="#" class="hover:text-gray-300"><img src=".../../../../../storage/app/public/twitter.jpeg" alt="Twitter"
                                 class="w-6 h-6"></a></li> -->
-                    <li><a href="#" class="hover:text-gray-300"><img src="../../../../../storage/app/public/instagram.png" alt="Instagram"
-                                class="w-6 h-6"></a></li>
+                    <li>
+                        <a href="#" class="hover:text-gray-300">
+                            <img src="../../../../../storage/app/public/instagram.png" alt="Instagram" class="w-6 h-6">
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div>

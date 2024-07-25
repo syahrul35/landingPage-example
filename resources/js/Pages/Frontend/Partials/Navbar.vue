@@ -1,7 +1,9 @@
 <template>
     <nav class="bg-gray-800 bg-opacity-50 text-white p-5 fixed w-full z-10 transition duration-300 ease-in-out">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-lg font-bold">IndoFood</a>
+            <a href="#" class="text-lg font-bold">
+                <img :src="getImageUrl(about.logo)" alt="logo" class="w-10 h-10 rounded-lg">
+            </a>
             <div class="flex items-center space-x-4">
                 <div id="nav-link" class="space-x-4">
                     <a href="#description" class="grow-underline active">Description</a>
@@ -52,5 +54,12 @@
         canRegister: {
             type: Boolean,
         },
+        about: {
+            type: Object
+        }
     })
+
+    const getImageUrl = (path) => {
+        return path ? `/storage/${path}` : ''
+    }
 </script>

@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 import Slider from './Partials/Slider.vue';
 import Navbar from './Partials/Navbar.vue';
 import Description from './Partials/Description.vue';
@@ -32,7 +33,7 @@ const props = defineProps({
     products: {
         type: Array
     }
-});
+})
 
 function handleImageError() {
     document.getElementById('screenshot-container')?.classList.add('!hidden');
@@ -40,12 +41,18 @@ function handleImageError() {
     document.getElementById('docs-card-content')?.classList.add('!flex-row');
     document.getElementById('background')?.classList.add('!hidden');
 }
+
+onMounted(() => {
+    import('../../Frontend').then(module => {
+        module.default();
+    });
+})
 </script>
 
 <template>
     <Head title="Welcome" />
     <!-- Navbar -->
-    <Navbar :canLogin="canLogin" :canRegister="canRegister"/>
+    <Navbar :canLogin="canLogin" :canRegister="canRegister" :about="about"/>
 
     <!-- Image Slider - Swiper -->
     <Slider :galleries="galleries"/>
