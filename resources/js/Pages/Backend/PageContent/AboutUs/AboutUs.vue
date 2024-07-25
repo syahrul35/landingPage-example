@@ -17,6 +17,13 @@
                             class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1"
                             @change="handleImageUpload">
                     </div>
+
+                    <!-- Company Name -->
+                    <div class="mb-6">
+                        <label for="companyName" class="block text-2xl font-bold mb-1">Company Name</label>
+                        <input type="text" id="companyName" v-model="form.companyName"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-1">
+                    </div>
     
                     <!-- Description -->
                     <div class="mb-6">
@@ -74,6 +81,7 @@ const props = defineProps({
 const editedPageContent = ref({
     id: props.pageContent.id,
     logo: props.pageContent.logo,
+    companyName: props.pageContent.companyName,
     about: props.pageContent.about,
     email: props.pageContent.email,
     phone: props.pageContent.phone,
@@ -84,6 +92,7 @@ const editedPageContent = ref({
 const form = useForm({
     logo: editedPageContent.value.logo,
     about: editedPageContent.value.about,
+    companyName: editedPageContent.value.companyName,
     email: editedPageContent.value.email,
     phone: editedPageContent.value.phone,
     address: editedPageContent.value.address,
@@ -115,6 +124,7 @@ const submitForm = async () => {
             _method: 'put',
             logo: form.logo,
             about: form.about,
+            companyName: form.companyName,
             email: form.email,
             phone: form.phone,
             address: form.address,

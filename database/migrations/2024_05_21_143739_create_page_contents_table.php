@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('page_contents', function (Blueprint $table) {
             $table->id();
             $table->string('logo')->nullable();
+            $table->string('companyName');
             $table->text('about');
             $table->string('email');
             $table->string('phone');

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         PageContent::create([
             'logo' => 'image.jpg',
+            'companyName' => 'Example Company',
             'about' => 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus, velit.',
             'email' => 'admin@example.com',
             'phone' => '0100000000000',

@@ -62,6 +62,7 @@ class AboutUsController extends Controller
         // Validasi input
         $validate = $request->validate([
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'companyName' => 'required|string',
             'about' => 'required|string',
             'email' => 'required|email',
             'phone' => 'required|string',
@@ -83,6 +84,7 @@ class AboutUsController extends Controller
             }
 
             // Update data lainnya
+            $aboutu->companyName = $validate['companyName'];
             $aboutu->about = $validate['about'];
             $aboutu->email = $validate['email'];
             $aboutu->phone = $validate['phone'];
