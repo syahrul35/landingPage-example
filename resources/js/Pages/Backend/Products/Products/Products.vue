@@ -6,6 +6,14 @@
             Products Management
         </template>
 
+        <div class="flash-message-container mb-2">
+            <flashmessage
+                v-if="$page.props.flash.message"
+                :message="$page.props.flash.message.message"
+                :type="$page.props.flash.message.type"
+            />
+        </div>
+
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="container mx-auto p-4">
                 <button 
@@ -85,6 +93,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import AddProductModal from './AddProductModal.vue';
 import EditProductModal from './EditProductModal.vue';
+import Flashmessage from '../../../../Components/FlashMessage.vue';
 
 // const emit = defineEmits(['sort'])
 const showAddModal = ref(false)

@@ -35,7 +35,7 @@ class GalleryController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'galleryImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'galleryImage' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'galleryTitle' => 'required|string|max:255',
             'description' => 'required|string',
         ]);
@@ -52,9 +52,19 @@ class GalleryController extends Controller
                 'description' => $validate['description'],
             ]);
 
-            return redirect()->route('gallery.index')->with('success', 'Gallery created successfully');
+            return redirect()->route('gallery.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Gallery Created Successfully!'
+                ]
+            ]);
         } catch (\Exception $e) {
-            return redirect()->route('gallery.index')->with('error', 'Gallery Failed to Create!' . $e->getMessage());
+            return redirect()->route('gallery.index')->with([
+                'message' => [
+                    'type' => 'error',
+                    'message' => 'Gallery Failed to Create!' . $e->getMessage()
+                ]
+            ]);
         }
     }
 
@@ -102,10 +112,20 @@ class GalleryController extends Controller
             $gallery->description = $validate['description'];
             $gallery->save();
 
-            return redirect()->route('gallery.index')->with('success', 'Gallery updated successfully');
+            return redirect()->route('gallery.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Gallery Updated Successfully!'
+                ]
+            ]);
 
         } catch (\Exception $e) {
-            return redirect()->route('gallery.index')->with('error', 'Failed to update gallery! ' . $e->getMessage());
+            return redirect()->route('gallery.index')->with([
+                'message' => [
+                    'type' => 'error',
+                    'message' => 'Gallery Failed to Update!' . $e->getMessage()
+                ]
+            ]);
         }
     }
 
@@ -125,6 +145,11 @@ class GalleryController extends Controller
 
         $gallery->delete();
 
-        return redirect()->route('gallery.index')->with('success', 'Gallery deleted successfully');
+        return redirect()->route('gallery.index')->with([
+            'message' => [
+                'type' => 'success',
+                'message' => 'Gallery Deleted Successfully!'
+            ]
+        ]);
     }
 }

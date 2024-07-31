@@ -61,7 +61,6 @@ class AboutUsController extends Controller
     {
         // Validasi input
         $validate = $request->validate([
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'companyName' => 'required|string',
             'about' => 'required|string',
             'email' => 'required|email',
@@ -69,6 +68,12 @@ class AboutUsController extends Controller
             'address' => 'required|string',
             'maps' => 'required|string',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $validate = $request->validate([
+                'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+        };
 
         try {
             // Handle upload logo jika ada
@@ -95,10 +100,20 @@ class AboutUsController extends Controller
             $aboutu->save();
 
             // Redirect atau response sesuai kebutuhan
-            return redirect()->with('success', 'Page Content updated successfully!');
+            return redirect()->route('aboutus.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Page Content Updated Successfully!'
+                ]
+            ]);
 
         } catch (\Exception $e) {
-            return redirect()->route('aboutus.index')->with('error', 'Failed to update Page Content! ' . $e->getMessage());
+            return redirect()->route('aboutus.index')->with([
+                'message' => [
+                    'type' => 'error',
+                    'message' => 'Page Content Failed to Update!' . $e
+                ]
+            ]);
         }
     }
 

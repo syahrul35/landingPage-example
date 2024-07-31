@@ -7,6 +7,13 @@
             About Us
         </template>
 
+        <div class="flash-message-container mb-2">
+            <flashmessage
+                v-if="$page.props.flash.message"
+                :message="$page.props.flash.message.message"
+                :type="$page.props.flash.message.type"
+            />
+        </div>
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <form @submit.prevent="submitForm">
                 <div class="container mx-auto p-6 w-11/12">
@@ -73,6 +80,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, defineProps, onMounted } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
+import Flashmessage from '../../../../Components/FlashMessage.vue';
 
 const props = defineProps({
     pageContent: Object

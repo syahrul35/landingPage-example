@@ -58,9 +58,19 @@ class ProductController extends Controller
                 'price' => $validate['price'],
             ]);
 
-            return redirect()->route('products.index')->with('success', 'Product created successfully');
+            return redirect()->route('products.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Product Created Successfully!'
+                ]
+            ]);
         } catch (\Exception $e) {
-            return redirect()->route('products.index')->with('error', 'Product Failed to Create!' . $e->getMessage());
+            return redirect()->route('products.index')->with([
+                'message' => [
+                    'type' => 'error',
+                    'message' => 'Product Failed to Created!' . $e->getMessage()
+                ]
+            ]);
         }
     }
 
@@ -122,9 +132,19 @@ class ProductController extends Controller
 
             $product->save();
 
-            return redirect()->route('products.index')->with('success', 'Product updated successfully');
+            return redirect()->route('products.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Product Updated Successfully!'
+                ]
+            ]);
         } catch (\Exception $e) {
-            return redirect()->route('products.index')->with('error', 'Product failed to update! ' . $e->getMessage());
+            return redirect()->route('products.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Product Failed to Update!' . $e->getMessage()
+                ]
+            ]);
         }
     }
 
@@ -145,6 +165,11 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+        return redirect()->route('products.index')->with([
+            'message' => [
+                    'type' => 'success',
+                    'message' => 'Product Deleted Successfully!'
+                ]
+        ]);
     }
 }

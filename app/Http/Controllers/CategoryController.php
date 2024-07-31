@@ -36,9 +36,23 @@ class CategoryController extends Controller
             'categoryName' => 'required|string|max:255',
         ]);
 
-        Category::create($request->all());
+        try {
+            Category::create($request->all());
 
-        return redirect()->route('category.index')->with('success', 'Category created successfully.');
+            return redirect()->route('category.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Category Created Successfully!'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('category.index')->with([
+                'message' => [
+                    'type' => 'error',
+                    'message' => 'Category Failed to Created!' . $e->getMessage()
+                ]
+            ]);
+        }
     }
 
     /**
@@ -66,9 +80,23 @@ class CategoryController extends Controller
             'categoryName' => 'required|string|max:255',
         ]);
 
-        $category->update($request->all());
-
-        return redirect()->route('category.index')->with('success', 'Category updated successfully.');
+        try {
+            $category->update($request->all());
+    
+            return redirect()->route('category.index')->with([
+                'message' => [
+                    'type' => 'success',
+                    'message' => 'Category Updated Successfully!'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('category.index')->with([
+                'message' => [
+                    'type' => 'error',
+                    'message' => 'Category Failed to Updated!' . $e->getMessage()
+                ]
+            ]);
+        }
     }
 
     /**
@@ -78,6 +106,11 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return redirect()->route('category.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('category.index')->with([
+            'message' => [
+                'type' => 'success',
+                'message' => 'Category Deleted Successfully!'
+            ]
+        ]);
     }
 }

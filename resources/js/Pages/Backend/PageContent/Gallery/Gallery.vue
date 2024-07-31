@@ -6,6 +6,14 @@
             Gallery Management
         </template>
 
+        <div class="flash-message-container mb-2">
+            <flashmessage
+                v-if="$page.props.flash.message"
+                :message="$page.props.flash.message.message"
+                :type="$page.props.flash.message.type"
+            />
+        </div>
+        
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="container mx-auto p-4">
                 <button 
@@ -93,6 +101,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AddGalleryModal from './AddGalleryModal.vue';
 import EditGalleryModal from './EditGalleryModal.vue';
+import Flashmessage from '../../../../Components/FlashMessage.vue';
 
 const props = defineProps({
     galleries: Array
