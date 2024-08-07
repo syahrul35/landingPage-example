@@ -71,5 +71,10 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+        <a href="/">
+            <Button class="w-full mt-2 border px-4 py-2 text-sm text-white bg-amber-500 rounded-md">
+                Back
+            </Button>
+        </a>
     </GuestLayout>
 </template>
