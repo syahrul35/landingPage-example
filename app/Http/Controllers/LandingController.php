@@ -14,7 +14,7 @@ class LandingController extends Controller
 {
     public function index()
     {
-        $galleries = Gallery::all();
+        $galleries = Gallery::where('isSlider', true)->get();
         $about = PageContent::find(1);
         $products = Product::all();
 
