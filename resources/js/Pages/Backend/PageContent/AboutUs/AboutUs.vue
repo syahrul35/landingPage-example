@@ -62,9 +62,7 @@
                         <label for="maps" class="block text-md font-medium text-gray-700">Maps</label>
                         <input type="text" id="maps" v-model="form.maps"
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        <div class="flex justify-center my-4">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126646.20960987003!2d112.63028045639682!3d-7.275612006021701!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7fbf8381ac47f%3A0x3027a76e352be40!2sSurabaya%2C%20Jawa%20Timur!5e0!3m2!1sid!2sid!4v1716399238164!5m2!1sid!2sid" width="400" height="300" style="border:0;text-align: center;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
-                        </div>
+                        <div class="flex justify-center my-4" v-html="form.maps"></div>
                     </div>
     
                     <div class="flex justify-end">

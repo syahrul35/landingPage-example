@@ -61,6 +61,7 @@ class AboutUsController extends Controller
     {
         // Validasi input
         $validate = $request->validate([
+            'logo' => 'nullable',
             'companyName' => 'required|string',
             'about' => 'required|string',
             'email' => 'required|email',
@@ -72,6 +73,12 @@ class AboutUsController extends Controller
         if ($request->hasFile('logo')) {
             $validate = $request->validate([
                 'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'companyName' => 'required|string',
+                'about' => 'required|string',
+                'email' => 'required|email',
+                'phone' => 'required|string',
+                'address' => 'required|string',
+                'maps' => 'required|string',
             ]);
         };
 
