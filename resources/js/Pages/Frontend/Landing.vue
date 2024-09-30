@@ -46,7 +46,7 @@ function handleImageError() {
 <template>
     <Head title="Welcome" />
     <!-- Navbar -->
-    <Navbar :canLogin="canLogin" :canRegister="canRegister" :about="about"/>
+    <Navbar :canLogin="canLogin" :canRegister="canRegister" :about="about" :isDetailPage="true"/>
 
     <!-- Image Slider - Swiper -->
     <Slider :galleries="galleries"/>

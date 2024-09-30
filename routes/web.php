@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\LandingController;
+use App\Http\Controllers\Frontend\ProductDetailController;
+use App\Http\Controllers\Frontend\LandingController;
 use App\Http\Controllers\PageContent\AboutUsController;
 use App\Http\Controllers\PageContent\GalleryController;
 use App\Http\Controllers\PageContent\SliderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductPaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -23,7 +25,9 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', [LandingController::class, 'index'])->name('landing.');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::resource('product', ProductDetailController::class);
+Route::post('/payment/token', [ProductPaymentController::class, 'getSnapToken']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Backend/Dashboard');
@@ -44,6 +48,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('category', CategoryController::class);
     Route::resource('products', ProductController::class);
+
 });
 
 require __DIR__.'/auth.php';
