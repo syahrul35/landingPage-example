@@ -18,7 +18,7 @@
                         </svg>
                     </div>
                     <div class="flex justify-between items-center mt-2">
-                        <span class="text-green-600 font-bold text-xl">{{ product.price }}</span>
+                        <span class="text-green-600 font-bold text-xl">Rp. {{ formattedTotal(product.price) }}</span>
                         <button @click="openProductDetail(product)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition duration-300">Buy Now</button>
                     </div>
                 </div>
@@ -38,7 +38,12 @@ const getImageUrl = (path) => {
     return path ? `/storage/${path}` : ''
 }
 
+const formattedTotal = (total) => {
+    const roundedTotal = Math.round(total);
+    return roundedTotal.toLocaleString('id-ID');
+}
+
 const openProductDetail = (product) => {
-    window.location.href = route('product.show', product.id);
-};  
+    window.location.href = route('product.show', product.id)
+}
 </script>
