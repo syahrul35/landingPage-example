@@ -6,9 +6,26 @@
             </a>
             <div class="flex items-center space-x-4">
                 <div id="nav-link" v-if="isDetailPage" class="space-x-4">
-                    <a href="#description" class="grow-underline active">Description</a>
-                    <a href="#products" class="grow-underline">Products</a>
-                    <a href="#contact" class="grow-underline">Contact</a>
+                    <div v-if="isDetailPage" class="space-x-4">
+                    <a href="#description"
+                        :class="{ 'active': activeLink === 'description' }" 
+                        @click="setActive('description')" 
+                        class="grow-underline">
+                        Description
+                    </a>
+                    <a href="#products"
+                        :class="{ 'active': activeLink === 'products' }" 
+                        @click="setActive('products')" 
+                        class="grow-underline">
+                        Products
+                    </a>
+                    <a href="#contact"
+                        :class="{ 'active': activeLink === 'contact' }" 
+                        @click="setActive('contact')" 
+                        class="grow-underline">
+                        Contact
+                    </a>
+                </div>
                 </div>
                 <div id="nav-btn" class="flex items-center pl-8">
                     <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-end">
@@ -37,7 +54,7 @@
 
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import { defineProps } from 'vue';
+import { defineProps, ref, onMounted } from 'vue';
 
 const props = defineProps({
     canLogin: {
@@ -57,5 +74,31 @@ const props = defineProps({
 
 const getImageUrl = (path) => {
     return path ? `/storage/${path}` : ''
+}
+
+// State untuk menyimpan link aktif
+const activeLink = ref('description')
+const navHeight = ref(0) // Menggunakan ref untuk navHeight agar reaktif
+
+// Ambil tinggi navbar setelah komponen di-mount
+onMounted(() => {
+  const navElement = document.querySelector("nav")
+  if (navElement) {
+    navHeight.value = navElement.offsetHeight // Ambil tinggi navbar
+  }
+})
+
+// Method untuk mengubah link aktif dan scroll ke bagian yang sesuai
+const setActive = (section) => {
+  activeLink.value = section
+  const targetElement = document.querySelector(`#${section}`)
+
+  if (targetElement) {
+    // Melakukan smooth scroll dengan mempertimbangkan tinggi navbar
+    window.scrollTo({
+      top: targetElement.offsetTop - navHeight.value, // Menggunakan navHeight dari ref
+      behavior: "smooth",
+    })
+  }
 }
 </script>
