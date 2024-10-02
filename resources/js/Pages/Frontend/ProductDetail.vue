@@ -3,7 +3,7 @@
     <!-- Navbar -->
     <Navbar :canLogin="canLogin" :canRegister="canRegister" :about="about" :isDetailPage="false"/>
     
-    <section class="container mx-auto p-2 pt-12">
+    <section class="container mx-auto p-2 pt-12 min-h-[100vh]">
         <div class="flex flex-col md:flex-row md:space-x-20">
             <!-- Product Image on the Left -->
             <div class="md:w-1/2">
@@ -17,19 +17,22 @@
                 </div>
                 <div class="flex justify-between items-center mt-6">
                     <span class="text-green-600 font-bold text-3xl">Rp. {{ formattedTotal(product.price) }}</span>
-                    <button class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition duration-300">
+                    <button @click="buyProduct" class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition duration-300">
                         Buy Now
                     </button>
                 </div>
             </div>
         </div>
     </section>
+
+    <FooterSection :about="about"/>
 </template>
 
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { Head, Link, useForm } from '@inertiajs/vue3'
 import {onBeforeUnmount, onMounted} from 'vue'
 import Navbar from './Partials/Navbar.vue'
+import FooterSection from './Partials/Footer.vue'
 
 const props = defineProps({
     canLogin: {
@@ -46,12 +49,9 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    about: {
-        type: Object
-    },
-    product: {
-        type: Object
-    }
+    about: Object,
+    product: Object,
+    snap_token: String
 })
 
 const getImageUrl = (path) => {
@@ -59,8 +59,8 @@ const getImageUrl = (path) => {
 }
 
 const formattedTotal = (total) => {
-    const roundedTotal = Math.round(total);
-    return roundedTotal.toLocaleString('id-ID');
+    const roundedTotal = Math.round(total)
+    return roundedTotal.toLocaleString('id-ID')
 }
 
 // Function to modify navbar styles for ProductDetail
@@ -96,12 +96,73 @@ const removeProductDetailClass = () => {
 
 // Modify navbar when component mounts and restore when unmounted
 onMounted(() => {
+    // Load Navbar script
     modifyNavbar()
     addProductDetailClass()
+
+    // Load Midtrans Snap script
+    const script = document.createElement('script')
+    script.src = 'https://app.sandbox.midtrans.com/snap/snap.js'
+    script.setAttribute('data-client-key', import.meta.env.VITE_MIDTRANS_CLIENT_KEY)
+    document.head.appendChild(script)
 })
 
 onBeforeUnmount(() => {
     restoreNavbar()
     removeProductDetailClass()
 })
+
+// Create form using Inertia's useForm
+const form = useForm({
+    product_id: props.product.id,
+    product_name: props.product.productName,
+    price: props.product.price,
+    name: 'Customer Name', // Replace this with dynamic customer data
+    email: 'customer@example.com' // Replace this with dynamic customer data
+})
+
+// Function to handle purchase
+const buyProduct = () => {
+    form.post('/payment/token', {
+        onSuccess: (page) => {
+            const snapToken = page.props.snap_token // Get snap_token from response
+
+            // Call Midtrans Snap Pay
+            window.snap.pay(snapToken, {
+                onSuccess: (result) => {
+                    console.log('Payment Success:', result)
+                    // Handle successful payment
+                },
+                onPending: (result) => {
+                    console.log('Payment Pending:', result)
+                    // Handle pending payment
+                },
+                onError: (result) => {
+                    console.log('Payment Error:', result)
+                    // Handle failed payment
+                },
+            })
+        },
+        onError: (errors) => {
+            console.error('Payment Error:', errors)
+        }
+    }),
+    window.snap.pay(snap_token, {
+        onSuccess: function(result) {
+            alert("Payment successful!")
+            console.log(result)
+        },
+        onPending: function(result) {
+            alert("Payment pending.")
+            console.log(result)
+        },
+        onError: function(result) {
+            alert("Payment failed.")
+            console.log(result)
+        },
+        onClose: function() {
+            alert('Transaction was closed.')
+        }
+    })
+}
 </script>
