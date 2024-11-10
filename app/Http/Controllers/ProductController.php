@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\PageContent;
 use App\Models\Product;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -79,7 +82,13 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $about = PageContent::find(1);
+        $product = Product::findOrFail($id);
+
+        // Kirim produk ke halaman detail produk menggunakan Inertia
+        return Inertia::render('Backend/Products/Products/ProductDetail', [
+            'product' => $product
+        ]);
     }
 
     /**

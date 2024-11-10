@@ -136,4 +136,8 @@ async function deleteProduct(product) {
       }
     }
 }
+
+const detailProduct = (product) => {
+    window.location.href = route('products.show', product.id)
+}
 </script>
